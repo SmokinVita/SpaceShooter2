@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     private Animator _anim;
 
     [SerializeField] private Player _player;
+    [SerializeField] private bool _isDead = false;
 
     private AudioSource _audioSource;
     [SerializeField] private AudioClip _explosionSFX;
@@ -16,8 +17,23 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _fireRate = 3f;
     private float _canShoot = 3f;
 
+    [SerializeField] private int _enemyID = 0;
+
+    private Vector3 _curveStartingPoint = new Vector3(-11.5f, 5.89f);
+    [SerializeField] private Transform[] _curvePoints;
+    [SerializeField] private GameObject[] _curvePrefabs;
+    private GameObject _instantiatedPoints;
+    float t;
+
+
+    [SerializeField] private GameObject _shield;
+    private bool _shieldActive;
+
     void Start()
     {
+        RandomShieldApplier();
+        EnemySelector();
+
         _player = FindObjectOfType<Player>();
         if (_player == null)
             Debug.Log("Player is NULL!");
@@ -31,20 +47,78 @@ public class Enemy : MonoBehaviour
             Debug.Log("AudioSource on Enemy is NULL!");
         else
             _audioSource.clip = _explosionSFX;
+    }
 
+    private void RandomShieldApplier()
+    {
+        int r = Random.Range(0, 4);
+        if (r == 2)
+        {
+            _shieldActive = true;
+            _shield.SetActive(true);
+        }
+    }
+
+    private void EnemySelector()
+    {
+        _enemyID = Random.Range(0, 2);
+        if (_enemyID == 1)
+        {
+            transform.position = _curveStartingPoint;
+            int randomPath = Random.Range(0, _curvePrefabs.Length);
+
+            _instantiatedPoints = Instantiate(_curvePrefabs[randomPath], transform.position, Quaternion.identity);
+            _curvePoints = new Transform[_instantiatedPoints.transform.childCount];
+            for (int i = 0; i < _instantiatedPoints.transform.childCount; i++)
+            {
+                _curvePoints[i] = _instantiatedPoints.transform.GetChild(i);
+            }
+            _instantiatedPoints.transform.parent = null;
+
+        }
     }
 
     void Update()
     {
+        if(_isDead) return;
+
+        Movement();
         Shoot();
+    }
 
-        transform.Translate(Vector3.down * (_speed * Time.deltaTime));
-        if (transform.position.y <= -5.5f)
+    private void Movement()
+    {
+
+        switch (_enemyID)
         {
-            float newXPOS = Random.Range(-9.4f, 9.4f);
+            case 0:
+                transform.Translate(Vector3.down * (_speed * Time.deltaTime));
+                if (transform.position.y <= -5.5f)
+                {
+                    float newXPOS = Random.Range(-9.4f, 9.4f);
 
-            transform.position = new Vector3(newXPOS, 7.43f);
+                    transform.position = new Vector3(newXPOS, 7.43f);
+                }
+                break;
+            case 1:
+
+                if (t < 1f)
+                {
+                    t += Time.deltaTime / _speed;
+                    Vector3 pos = Mathf.Pow(1 - t, 2) * _curvePoints[0].position + 2 * (1 - t) * t * _curvePoints[1].position + Mathf.Pow(t, 2) * _curvePoints[2].position;
+                    transform.position = pos;
+                    if (transform.position.x >= _curvePoints[2].position.x)
+                    {
+                        transform.position = _curveStartingPoint;
+                        t = 0f;
+                    }
+                }
+
+                break;
+            case 2:
+                break;
         }
+
     }
 
     private void Shoot()
@@ -64,6 +138,13 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if(_shieldActive)
+        {
+            _shield.SetActive(false);
+            _shieldActive = false;
+            return;
+        }
+
         if (other.CompareTag("Player"))
         {
             if (_player != null)
@@ -73,6 +154,8 @@ public class Enemy : MonoBehaviour
             _anim.SetTrigger("OnEnemyDeath");
             _audioSource.Play(); //what is _audioSource?.Player();
             _speed = 0;
+            _isDead = true;
+            Destroy(_instantiatedPoints);
             Destroy(this.gameObject, 2.5f);
         }
 
@@ -87,12 +170,16 @@ public class Enemy : MonoBehaviour
             _audioSource.Play();
             Destroy(GetComponent<Collider2D>());
             _speed = 0;
+            _isDead = true;
+            Destroy(_instantiatedPoints);
             Destroy(this.gameObject, 2.5f);
         }
 
-        if(other.CompareTag("Beam"))
+        if (other.CompareTag("Beam"))
         {
             _anim.SetTrigger("OnEnemyDeath");
+            _isDead = true;
+            Destroy(_instantiatedPoints);
             Destroy(this.gameObject, 2.5f);
         }
     }

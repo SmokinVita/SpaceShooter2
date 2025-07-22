@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float _speed = 4f;
+    [SerializeField] protected float _speed = 4f;
     private Animator _anim;
 
-    [SerializeField] private Player _player;
+    [SerializeField] protected Player _player;
     [SerializeField] private bool _isDead = false;
 
     private AudioSource _audioSource;
@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject _shield;
     private bool _shieldActive;
 
-    void Start()
+    protected virtual void Start()
     {
         RandomShieldApplier();
         EnemySelector();
@@ -78,7 +78,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if(_isDead) return;
 
@@ -86,7 +86,7 @@ public class Enemy : MonoBehaviour
         Shoot();
     }
 
-    private void Movement()
+    protected virtual void Movement()
     {
 
         switch (_enemyID)

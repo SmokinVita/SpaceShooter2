@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
     private AudioSource _audioSource;
     [SerializeField] private AudioClip _explosionSFX;
 
-    [SerializeField] private GameObject _laserPrefab;
+    [SerializeField] protected GameObject _laserPrefab;
     [SerializeField] private float _fireRate = 3f;
     private float _canShoot = 3f;
 
@@ -121,7 +121,7 @@ public class Enemy : MonoBehaviour
 
     }
 
-    private void Shoot()
+    protected virtual void Shoot()
     {
         if (Time.time >= _canShoot)
         {

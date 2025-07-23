@@ -19,8 +19,8 @@ TagManager:
   - PostProcessing
   - Enemy
   - Player
-  - 
-  - 
+  - Player_Laser
+  - Enemy_Layer
   - 
   - 
   - 

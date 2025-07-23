@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8493586797044351789}
   - component: {fileID: 8493586797044351790}
   - component: {fileID: 8493586797044351791}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Laser
   m_TagString: Laser
   m_Icon: {fileID: 0}
@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 8
+  _isEnemyLaser: 0
 --- !u!61 &8493586797044351790
 BoxCollider2D:
   m_ObjectHideFlags: 0

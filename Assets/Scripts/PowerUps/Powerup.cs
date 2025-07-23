@@ -47,6 +47,9 @@ public class Powerup : MonoBehaviour
                     case 5:
                         player.ActiveBeam();
                         break;
+                    case 6:
+                        player.SlowPlayerDown();
+                        break;
                 }
                 AudioSource.PlayClipAtPoint(_explosionSFX, transform.position);
                 Destroy(this.gameObject);

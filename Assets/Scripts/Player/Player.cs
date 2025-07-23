@@ -281,4 +281,16 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(5f);
         _beam.SetActive(false);
     }
+    
+    public void SlowPlayerDown()
+    {
+        _speed /= 2;
+        StartCoroutine(SlowDownCoolDownRoutine());
+    }
+
+    IEnumerator SlowDownCoolDownRoutine()
+    {
+        yield return new WaitForSeconds(3f);
+        _speed *= 2;
+    }
 }

@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _gameOverText;
     [SerializeField] private Text _restartText;
     [SerializeField] private Image _thrusterImg;
+    [SerializeField] private Image _magnetImg;
 
     [SerializeField] private Text _outOfAmmo;
     [SerializeField] private Text _ammoAmount;
@@ -93,6 +94,11 @@ public class UIManager : MonoBehaviour
     public void AmmoAmountText(int amount)
     {
         _ammoAmount.text = $"Ammo: {amount}";
+    }
+
+    public void UpdateMagnetGauge(float currentMagnet)
+    {
+        _magnetImg.fillAmount = currentMagnet;
     }
 
 }

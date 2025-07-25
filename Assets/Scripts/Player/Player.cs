@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -51,9 +52,15 @@ public class Player : MonoBehaviour
 
     [SerializeField] private CameraShake _cameraShake;
 
+    private bool _canUseMagnet = true;
+    [SerializeField] private float _powerupPullSpeed = 4f;
+    private float _magnetPower = 3f;
+    private float _currentMagnetPower;
+
     private void Start()
     {
         transform.position = new Vector3(0, 0, 0);
+        _currentMagnetPower = _magnetPower;
 
         _spawnManager = FindObjectOfType<SpawnManager>();
         if (_spawnManager == null)
@@ -86,13 +93,20 @@ public class Player : MonoBehaviour
     {
         Movement();
 
-        if (Input.GetKeyDown(KeyCode.H)) {
+        if (Input.GetKeyDown(KeyCode.H))
+        {
             Heal();
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _nextFire && _ammoCount > 0)
             Shoot();
+
+        if (Input.GetKey(KeyCode.C) && _canUseMagnet)
+            PullPowerups();
+
     }
+
+
 
     private void Movement()
     {
@@ -104,7 +118,7 @@ public class Player : MonoBehaviour
         {
             transform.Translate(_direction * ((_speed * _thrusterBoostAmount) * Time.deltaTime));
             _thrusterTemp += Time.deltaTime;
-            
+
             if (_thrusterTemp >= _maxThrusterTemp)
             {
                 Debug.Log("Thurster is overheating!");
@@ -115,7 +129,7 @@ public class Player : MonoBehaviour
         else
         {
             transform.Translate(_direction * (_speed * Time.deltaTime));
-            if(_thrusterTemp > 0 && !_isThrusterOverheating)
+            if (_thrusterTemp > 0 && !_isThrusterOverheating)
                 _thrusterTemp -= Time.deltaTime;
         }
 
@@ -168,6 +182,38 @@ public class Player : MonoBehaviour
 
     }
 
+    private void PullPowerups()
+    {
+        _currentMagnetPower -= Time.deltaTime;
+        _uiManager.UpdateMagnetGauge(_currentMagnetPower / _magnetPower);
+        if (_currentMagnetPower <= 0f)
+        {
+            _canUseMagnet = false;
+            StartCoroutine(ReenergizeMagnetRoutine());
+            return;
+        }
+
+        GameObject[] powerups = GameObject.FindGameObjectsWithTag("Powerup");
+        foreach (GameObject powerup in powerups)
+        {
+            powerup.transform.position = Vector2.MoveTowards(powerup.transform.position, transform.position, _powerupPullSpeed * Time.deltaTime);
+        }
+    }
+
+    IEnumerator ReenergizeMagnetRoutine()
+    {
+        while (_canUseMagnet == false)
+        {
+            yield return new WaitForSeconds(.01f);
+            _currentMagnetPower += Time.deltaTime;
+            _uiManager.UpdateMagnetGauge(_currentMagnetPower / _magnetPower);
+            if (_currentMagnetPower >= _magnetPower)
+            {
+                _canUseMagnet = true;
+            }
+        }
+    }
+
     public void Damage()
     {
         if (_isShieldActive == true)
@@ -210,7 +256,7 @@ public class Player : MonoBehaviour
     public void Heal()
     {
         _lives++;
-        if(_lives >= 3)
+        if (_lives >= 3)
         {
             _lives = 3;
         }
@@ -281,7 +327,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(5f);
         _beam.SetActive(false);
     }
-    
+
     public void SlowPlayerDown()
     {
         _speed /= 2;

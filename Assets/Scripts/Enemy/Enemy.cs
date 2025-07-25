@@ -25,6 +25,8 @@ public class Enemy : MonoBehaviour
     private GameObject _instantiatedPoints;
     float t;
 
+    [SerializeField] private float _raycastDistance = 2f;
+    [SerializeField] private LayerMask _powerupLayer;
 
     [SerializeField] private GameObject _shield;
     private bool _shieldActive;
@@ -84,6 +86,8 @@ public class Enemy : MonoBehaviour
 
         Movement();
         Shoot();
+
+        
     }
 
     protected virtual void Movement()
@@ -123,6 +127,13 @@ public class Enemy : MonoBehaviour
 
     protected virtual void Shoot()
     {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, _raycastDistance, _powerupLayer);
+        Debug.DrawRay(transform.position, Vector2.down * _raycastDistance, Color.green);
+        if (hit)
+        {
+            _canShoot = 1;
+        }
+
         if (Time.time >= _canShoot)
         {
             _fireRate = Random.Range(3f, 7f);

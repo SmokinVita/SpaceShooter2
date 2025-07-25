@@ -55,6 +55,12 @@ public class Powerup : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+
+        if(other.CompareTag("Laser"))
+        {
+            Destroy(other.gameObject);
+            Destroy(this.gameObject);
+        }
     }
 
     public int SpawnWeight()

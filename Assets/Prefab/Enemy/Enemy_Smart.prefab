@@ -275,9 +275,14 @@ MonoBehaviour:
   - {fileID: 990830633307637958, guid: 3467872eee29267439f8993b6b435651, type: 3}
   - {fileID: 1430077902925622327, guid: f72b0204f6749ed4d9e9df1731cf3ae9, type: 3}
   - {fileID: 7928054173792207820, guid: 14a4754f21ee0c0409d05886d5aac42b, type: 3}
+  _raycastDistance: 2
+  _powerupLayer:
+    serializedVersion: 2
+    m_Bits: 8192
   _shield: {fileID: 6524530280176245796}
   _backwardsFirePoint: {fileID: 7330471034950811114}
   _backwardsCanFire: 2
+  _backFirerate: 2
 --- !u!1 &6524530280176245796
 GameObject:
   m_ObjectHideFlags: 0

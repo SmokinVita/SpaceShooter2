@@ -112,6 +112,10 @@ MonoBehaviour:
   - {fileID: 990830633307637958, guid: 3467872eee29267439f8993b6b435651, type: 3}
   - {fileID: 1430077902925622327, guid: f72b0204f6749ed4d9e9df1731cf3ae9, type: 3}
   - {fileID: 7928054173792207820, guid: 14a4754f21ee0c0409d05886d5aac42b, type: 3}
+  _raycastDistance: 3
+  _powerupLayer:
+    serializedVersion: 2
+    m_Bits: 8192
   _shield: {fileID: 8488350020235047402}
 --- !u!50 &1240040747326278541
 Rigidbody2D:

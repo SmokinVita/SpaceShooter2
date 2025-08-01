@@ -15,6 +15,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _outOfAmmo;
     [SerializeField] private Text _ammoAmount;
 
+    [SerializeField] private Text _incomingWaveText;
+    [SerializeField] private Text _incomingBossText;
+
     private GameManager _gameManager;
 
     private void Start()
@@ -101,4 +104,29 @@ public class UIManager : MonoBehaviour
         _magnetImg.fillAmount = currentMagnet;
     }
 
+    public void IncomingWave(int wave)
+    {
+        _incomingWaveText.text = $"Wave {wave} Incoming!";
+        _incomingWaveText.enabled = true;
+        StartCoroutine(WaveTextDeactivate());
+    }
+
+    IEnumerator WaveTextDeactivate()
+    {
+        yield return new WaitForSeconds(1.5f);
+        _incomingWaveText.enabled = false;
+    }
+
+    public void IncomingBoss()
+    {
+        _incomingBossText.text = $"Boss incoming!";
+        _incomingBossText.enabled = true;
+        StartCoroutine(BossTextDeactivate());
+    }
+
+    IEnumerator BossTextDeactivate()
+    {
+        yield return new WaitForSeconds(2f);
+        _incomingBossText.enabled = false;
+    }
 }

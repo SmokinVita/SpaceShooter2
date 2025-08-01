@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
+
 
 public class SpawnManager : MonoBehaviour
 {
@@ -9,25 +11,58 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject[] _powerupPrefab;
     private int _randomPowerUp;
 
-    private bool _stopSpawning = false;
+    private bool _stopSpawningEnemies = false;
+    private bool _stopSpawningPowerUps = false;
     private GameObject _selectedPowerup;
+
+
+    [Header("Wave System")]
+    [SerializeField] private int _maxWave =3;
+    [SerializeField] private int _currentWave = 0;
+    [Tooltip("The amount of enemies will be multiplied by the current wave!")]
+    [SerializeField] private int _enemiesToSpawn = 3;
+    private int _enemiesInScene;
+
+    [SerializeField] private GameManager _gameManager;
+    [SerializeField] private UIManager _uiManager;
+
 
     void Start()
     {
-        //StartCoroutine(SpawnEnemiesRoutine());
-        //StartCoroutine(SpawnPowerupRoutine());
+        
     }
 
     //method to start spawning!
     public void StartSpawning()
     {
-        StartCoroutine(SpawnEnemiesRoutine());
+        _currentWave++;
+        
         StartCoroutine(SpawnPowerupRoutine());
+        if(_currentWave == _maxWave)
+        {
+            Debug.Log("SpawningBoss!");
+            _uiManager.IncomingBoss();
+            return;
+        }
+
+        _uiManager.IncomingWave(_currentWave);
+        StartCoroutine(SpawnEnemiesRoutine(_enemiesToSpawn * _currentWave));
+        Debug.Log(_enemiesToSpawn * _currentWave);
+        
+    }
+
+    public void StopSpawning()
+    {
+        //stop coroutines from spawning till meteorite is destroyed again.
+        StopAllCoroutines();
+        _stopSpawningPowerUps = false;
+        _stopSpawningEnemies = false;
     }
 
     public void OnPlayerDeath()
     {
-        _stopSpawning = true;
+        _stopSpawningEnemies = true;
+        _stopSpawningPowerUps = true;
     }
 
 
@@ -53,22 +88,27 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    IEnumerator SpawnEnemiesRoutine()
+    IEnumerator SpawnEnemiesRoutine(int enemiesToSpawn)
     {
-        yield return new WaitForSeconds(3f);
-        while (_stopSpawning == false)
+        yield return new WaitForSeconds(4f);
+        while (_stopSpawningEnemies == false && enemiesToSpawn > 0)
         {
             Vector3 spawnPoint = new Vector3(Random.Range(-9.3f, 9.3f), 8);
             GameObject enemy = Instantiate(_enemyPrefab, spawnPoint, Quaternion.identity);
             enemy.transform.parent = _enemyContainer.transform;
+            enemiesToSpawn--;
+            Debug.Log(enemiesToSpawn);
             yield return new WaitForSeconds(5);
         }
+
+        Debug.Log("Enemies have stopped Spawning!");
+        StartCoroutine(_gameManager.EnemyCheckRoutine(true));
     }
 
     IEnumerator SpawnPowerupRoutine()
     {
         yield return new WaitForSeconds(3f);
-        while (_stopSpawning == false)
+        while (_stopSpawningPowerUps == false)
         {
             yield return new WaitForSeconds(Random.Range(3f, 7f));
             Vector3 spawnPoint = new Vector2(Random.Range(-9.3f, 9.3f), 8);

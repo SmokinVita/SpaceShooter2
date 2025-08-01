@@ -153,6 +153,7 @@ public class Enemy : MonoBehaviour
         {
             _shield.SetActive(false);
             _shieldActive = false;
+            Destroy(other.gameObject);
             return;
         }
 

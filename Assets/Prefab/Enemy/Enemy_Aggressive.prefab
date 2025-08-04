@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3694510109338308800}
   - component: {fileID: 5295667865613262158}
   - component: {fileID: 7188035895216555346}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Shields
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 5348512197658191176}
   - component: {fileID: 3090805896065880537}
   - component: {fileID: 5189720981657140115}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy_Aggressive
   m_TagString: Enemy
   m_Icon: {fileID: 0}

@@ -5,7 +5,7 @@ using Debug = UnityEngine.Debug;
 
 public class SpawnManager : MonoBehaviour
 {
-    [SerializeField] private GameObject _enemyPrefab;
+    [SerializeField] private GameObject[] _enemyPrefab;
     [SerializeField] private GameObject _enemyContainer;
 
     [SerializeField] private GameObject[] _powerupPrefab;
@@ -94,7 +94,8 @@ public class SpawnManager : MonoBehaviour
         while (_stopSpawningEnemies == false && enemiesToSpawn > 0)
         {
             Vector3 spawnPoint = new Vector3(Random.Range(-9.3f, 9.3f), 8);
-            GameObject enemy = Instantiate(_enemyPrefab, spawnPoint, Quaternion.identity);
+            int randomEnemy = Random.Range(0, _enemyPrefab.Length);
+            GameObject enemy = Instantiate(_enemyPrefab[randomEnemy], spawnPoint, Quaternion.identity);
             enemy.transform.parent = _enemyContainer.transform;
             enemiesToSpawn--;
             Debug.Log(enemiesToSpawn);

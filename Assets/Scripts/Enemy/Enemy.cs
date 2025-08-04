@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
     private Animator _anim;
 
     [SerializeField] protected Player _player;
-    [SerializeField] private bool _isDead = false;
+    [SerializeField] protected bool _isDead = false;
 
     private AudioSource _audioSource;
     [SerializeField] private AudioClip _explosionSFX;
@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _fireRate = 3f;
     private float _canShoot = 3f;
 
-    [SerializeField] private int _enemyID = 0;
+    [SerializeField] protected int _enemyID = 0;
 
     private Vector3 _curveStartingPoint = new Vector3(-11.5f, 5.89f);
     [SerializeField] private Transform[] _curvePoints;
@@ -92,7 +92,6 @@ public class Enemy : MonoBehaviour
 
     protected virtual void Movement()
     {
-
         switch (_enemyID)
         {
             case 0:

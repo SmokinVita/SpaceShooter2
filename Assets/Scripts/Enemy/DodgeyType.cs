@@ -5,7 +5,8 @@ using UnityEngine;
 public class DodgeyType : Enemy
 {
 
-    [SerializeField] private LayerMask _dodgeMask;
+    [SerializeField] private float _beamFireTime;
+    [SerializeField] private GameObject _laserBeam;
 
     protected override void Start()
     {
@@ -64,5 +65,21 @@ public class DodgeyType : Enemy
             case 2:
                 break;
         }
+    }
+
+    protected override void Shoot()
+    {
+        if (Time.time >= _canShoot)
+        {
+            _canShoot = Time.time + _beamFireTime;
+            _laserBeam.SetActive(true);
+            StartCoroutine(BeamCoolDownRoutine());
+        }
+    }
+
+    private IEnumerator BeamCoolDownRoutine()
+    {
+        yield return new WaitForSeconds(3f);
+        _laserBeam.SetActive(false);
     }
 }

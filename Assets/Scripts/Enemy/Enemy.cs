@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] protected GameObject _laserPrefab;
     [SerializeField] private float _fireRate = 3f;
-    private float _canShoot = 3f;
+    protected float _canShoot = 3f;
 
     [SerializeField] protected int _enemyID = 0;
 

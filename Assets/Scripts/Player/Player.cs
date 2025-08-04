@@ -56,6 +56,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _powerupPullSpeed = 4f;
     private float _magnetPower = 3f;
     private float _currentMagnetPower;
+    private bool _canDamage;
 
     private void Start()
     {
@@ -338,5 +339,22 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
         _speed *= 2;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("EnemyBeam") && _canDamage)
+        {
+            Damage();
+            _canDamage = false;
+            StartCoroutine(PlayerInvencibleRoutine());
+            
+        }
+    }
+
+    IEnumerator PlayerInvencibleRoutine()
+    {
+        yield return new WaitForSeconds(1.5f);
+        _canDamage = true;
     }
 }

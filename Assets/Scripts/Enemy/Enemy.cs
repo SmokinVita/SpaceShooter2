@@ -139,14 +139,13 @@ public class Enemy : MonoBehaviour
             _canShoot = Time.time + _fireRate;
             GameObject enemyLaser = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
             Laser[] lasers = enemyLaser.GetComponentsInChildren<Laser>();
-            Debug.Log("fired!");
 
             for (int i = 0; i < lasers.Length; i++)
                 lasers[i].AssignEnemyLaser();
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    protected virtual void OnTriggerEnter2D(Collider2D other)
     {
         if(_shieldActive)
         {
@@ -191,6 +190,14 @@ public class Enemy : MonoBehaviour
             _anim.SetTrigger("OnEnemyDeath");
             _isDead = true;
             Destroy(_instantiatedPoints);
+            Destroy(this.gameObject, 2.5f);
+        }
+
+        if(other.CompareTag("HomingMissile"))
+        {
+            _anim.SetTrigger("OnEnemyDeath");
+            _isDead= true;
+            Destroy(other);
             Destroy(this.gameObject, 2.5f);
         }
     }

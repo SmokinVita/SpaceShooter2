@@ -9,6 +9,7 @@ TagManager:
   - Beam
   - Powerup
   - EnemyBeam
+  - HomingMissile
   layers:
   - Default
   - TransparentFX

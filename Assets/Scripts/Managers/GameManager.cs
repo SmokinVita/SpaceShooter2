@@ -57,11 +57,9 @@ public class GameManager : MonoBehaviour
             {
                 _spawnManager.StopSpawning();
                 Instantiate(_astroid);
-                Debug.Log("Killed all enemies");
                 _checkingForEnemies = false;
             }
         }
-        Debug.Log("Broke out of checking Enemies!");
     }
     
 }

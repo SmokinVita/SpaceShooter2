@@ -7,6 +7,7 @@ public class DodgeyType : Enemy
 
     [SerializeField] private float _beamFireTime;
     [SerializeField] private GameObject _laserBeam;
+    private bool _canDodge = true;
 
     protected override void Start()
     {
@@ -24,11 +25,19 @@ public class DodgeyType : Enemy
         Collider2D laser = Physics2D.OverlapBox(transform.position + new Vector3(0, -2f), new Vector2(1, 2), 0);
         if (laser != null && !_isDead)
         {
-            if (laser.CompareTag("Laser"))
+            if (laser.CompareTag("Laser") && _canDodge)
             {
                 PickDirection();
+                _canDodge = false;
+                StartCoroutine(DodgeCoolDownRoutine());
             }
         }
+    }
+
+    IEnumerator DodgeCoolDownRoutine()
+    {
+        yield return new WaitForSeconds(2f);
+        _canDodge = true;
     }
 
     protected override void Movement()
@@ -80,6 +89,12 @@ public class DodgeyType : Enemy
     private IEnumerator BeamCoolDownRoutine()
     {
         yield return new WaitForSeconds(3f);
+        _laserBeam.SetActive(false);
+    }
+
+    protected override void OnTriggerEnter2D(Collider2D collision)
+    {
+        base.OnTriggerEnter2D(collision);
         _laserBeam.SetActive(false);
     }
 }

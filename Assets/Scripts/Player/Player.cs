@@ -58,6 +58,10 @@ public class Player : MonoBehaviour
     private float _currentMagnetPower;
     private bool _canDamage;
 
+    private bool _homingMissileActive = false;
+    [SerializeField] private GameObject _homingMissilePrefab;
+    private int _missileCount = 3;
+
     private void Start()
     {
         transform.position = new Vector3(0, 0, 0);
@@ -171,6 +175,13 @@ public class Player : MonoBehaviour
         if (_isTripleShotActive == true)
         {
             Instantiate(_tripleShotPrefab, _firePOS.transform.position, Quaternion.identity);
+        }
+        else if(_homingMissileActive)
+        {
+            Instantiate(_homingMissilePrefab, _firePOS.transform.position,Quaternion.identity);
+            _missileCount--;
+            if (_missileCount <= 0)
+                _homingMissileActive = false;
         }
         else
         {
@@ -345,8 +356,8 @@ public class Player : MonoBehaviour
     {
         if (collision.CompareTag("EnemyBeam") && _canDamage)
         {
-            Damage();
             _canDamage = false;
+            Damage();
             StartCoroutine(PlayerInvencibleRoutine());
             
         }
@@ -356,5 +367,11 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         _canDamage = true;
+    }
+
+    public void ActivateHomingMissile()
+    {
+        _homingMissileActive = true;
+        _missileCount = 3;
     }
 }

@@ -1758,9 +1758,11 @@ MonoBehaviour:
   _thrusterBoostAmount: 2
   _thrusterTemp: 0
   _maxThrusterTemp: 5
-  _beam: {fileID: 0}
+  _beam: {fileID: 124765512}
   _cameraShake: {fileID: 0}
   _powerupPullSpeed: 4
+  _homingMissilePrefab: {fileID: 1354661289964056946, guid: e672f061aba1b7142ac41f5931cddb6e,
+    type: 3}
 --- !u!212 &1450508481
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2717,6 +2719,8 @@ MonoBehaviour:
   - {fileID: 2147277458310357943, guid: eb88e627594638649b4df52f25c76f60, type: 3}
   - {fileID: 2147277458310357943, guid: beedde7e5f61ff340a331a37c7c206c3, type: 3}
   - {fileID: 8034239507856810894, guid: 7b25a8b40dd94c74eb9db1c56243ff23, type: 3}
+  - {fileID: 7121195674646743588, guid: 7294cc0314c670b4daa587dde5e7b534, type: 3}
+  - {fileID: 6334728068783967892, guid: a938a8d443fc884449fbfeb31ad32c55, type: 3}
   _maxWave: 3
   _currentWave: 0
   _enemiesToSpawn: 3

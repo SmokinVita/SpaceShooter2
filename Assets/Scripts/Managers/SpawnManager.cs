@@ -98,11 +98,9 @@ public class SpawnManager : MonoBehaviour
             GameObject enemy = Instantiate(_enemyPrefab[randomEnemy], spawnPoint, Quaternion.identity);
             enemy.transform.parent = _enemyContainer.transform;
             enemiesToSpawn--;
-            Debug.Log(enemiesToSpawn);
             yield return new WaitForSeconds(5);
         }
 
-        Debug.Log("Enemies have stopped Spawning!");
         StartCoroutine(_gameManager.EnemyCheckRoutine(true));
     }
 

@@ -50,13 +50,19 @@ public class Powerup : MonoBehaviour
                     case 6:
                         player.SlowPlayerDown();
                         break;
+                    case 7:
+                        player.ActivateHomingMissile();
+                        break;
+                    case 8:
+                        player.ActiveBeam();
+                        break;
                 }
                 AudioSource.PlayClipAtPoint(_explosionSFX, transform.position);
                 Destroy(this.gameObject);
             }
         }
 
-        if(other.CompareTag("Laser"))
+        if (other.CompareTag("Laser"))
         {
             Destroy(other.gameObject);
             Destroy(this.gameObject);

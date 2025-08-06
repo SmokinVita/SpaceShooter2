@@ -147,7 +147,7 @@ MonoBehaviour:
   _speed: 3
   _powerupID: 6
   _explosionSFX: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
-  _spawnWeight: 60
+  _spawnWeight: 50
 --- !u!95 &8709405312496854581
 Animator:
   serializedVersion: 3

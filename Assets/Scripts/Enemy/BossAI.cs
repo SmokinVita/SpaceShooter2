@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class BossAI : MonoBehaviour
@@ -11,18 +12,39 @@ public class BossAI : MonoBehaviour
     private bool _isDead = false;
     private bool _attackFinished;
     //bool to check if can move
-    [SerializeField] private bool _canMove = true;
+    [SerializeField] private bool _canMove = false;
     [SerializeField] private bool _moveRight = true;
     [SerializeField] private GameObject[] _wayPoints;
+    private Animator _animator;
 
-
+    //Missile from the sides
     [SerializeField] private GameObject[] _missleSpawnPoints;
     [SerializeField] private GameObject _missilePrefab;
+
+    //Enemy Spawning Info
+    [SerializeField] private SpawnManager _spawnManager;
+    [SerializeField] private int _spawnAmount = 4;
+    [SerializeField] private int _currentSpawnTime;
 
     // Start is called before the first frame update
     void Start()
     {
+        _spawnManager = GameObject.FindObjectOfType<SpawnManager>();
+        if (_spawnManager == null)
+            Debug.Log("SpawnManager is NULL!");
+
+        _animator = GetComponent<Animator>();
+        if (_animator == null)
+            Debug.Log("Boss Animator is NULL!");
+
         StartCoroutine(BossAttackCoolDownRoutine());
+    }
+
+    public void StartMovement()
+    {
+        Debug.Log("StartMovement");
+        _animator.enabled = false;
+        _canMove = true;
     }
 
     // Update is called once per frame
@@ -62,10 +84,10 @@ public class BossAI : MonoBehaviour
         yield return null;
         while (!_isDead)
         {
+            _attackFinished = false;
             float randomCoolDown = Random.Range(5f, 20f);
             yield return new WaitForSeconds(randomCoolDown);
             _canMove = false;
-            _attackFinished = false;
             //Fire an attack
             Attack();
             Debug.Log("Fire!!");
@@ -77,7 +99,7 @@ public class BossAI : MonoBehaviour
 
     private void Attack()
     {
-        int randomAttack = 0;//Random.Range(0, 5);
+        int randomAttack = 1;//Random.Range(0, 5);
         switch (randomAttack)
         {
             case 0://4 milssile's from the sides, 2 from each side
@@ -89,18 +111,30 @@ public class BossAI : MonoBehaviour
                 //Instantiate left 
                 //instantiate right after 1.5 seconds -> IEnumerator?
                 break;
-            case 1://spawn enemies from top or side
+            case 1://spawn enemies
+                _currentSpawnTime++;
+                StartCoroutine(_spawnManager.SpawnEnemiesRoutine(_currentSpawnTime * _spawnAmount));
                 break;
             case 2://Lasers
                 break;
             case 3://drop down bomb's to explode
                 break;
-            case 4://
+            case 4://Laser Water fall, leave open a gap
                 break;
 
             default:
                 break;
         }
+    }
+
+    private void ActivateShields()
+    {
+
+    }
+
+    private void DeactiveShields()
+    {
+
     }
 
     private void Damage()
@@ -131,6 +165,12 @@ public class BossAI : MonoBehaviour
         yield return new WaitForSeconds(3f);
         _attackFinished = true;
     }
+
+    public void FinishedAttack()
+    {
+        _attackFinished = true;
+    }
+
 }
 /*
  * Boss moves back and forth and will randomly stop fire an attack.

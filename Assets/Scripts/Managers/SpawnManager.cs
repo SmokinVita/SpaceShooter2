@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UnityEditorInternal;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -17,11 +18,14 @@ public class SpawnManager : MonoBehaviour
 
 
     [Header("Wave System")]
-    [SerializeField] private int _maxWave =3;
+    [SerializeField] private int _maxWave = 3;
     [SerializeField] private int _currentWave = 0;
     [Tooltip("The amount of enemies will be multiplied by the current wave!")]
     [SerializeField] private int _enemiesToSpawn = 3;
     private int _enemiesInScene;
+
+    [SerializeField] private BossAI _bossObject;
+    [SerializeField] private bool _isBossWave = false;
 
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private UIManager _uiManager;
@@ -29,18 +33,21 @@ public class SpawnManager : MonoBehaviour
 
     void Start()
     {
-        
+        if (_bossObject == null)
+            Debug.Log("BossAI is Null!");
     }
 
     //method to start spawning!
     public void StartSpawning()
     {
         _currentWave++;
-        
+
         StartCoroutine(SpawnPowerupRoutine());
-        if(_currentWave == _maxWave)
+        if (_currentWave == _maxWave)
         {
             Debug.Log("SpawningBoss!");
+            _isBossWave = true;
+            _bossObject.gameObject.SetActive(true);
             _uiManager.IncomingBoss();
             return;
         }
@@ -48,7 +55,7 @@ public class SpawnManager : MonoBehaviour
         _uiManager.IncomingWave(_currentWave);
         StartCoroutine(SpawnEnemiesRoutine(_enemiesToSpawn * _currentWave));
         Debug.Log(_enemiesToSpawn * _currentWave);
-        
+
     }
 
     public void StopSpawning()
@@ -88,7 +95,7 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    IEnumerator SpawnEnemiesRoutine(int enemiesToSpawn)
+    public IEnumerator SpawnEnemiesRoutine(int enemiesToSpawn)
     {
         yield return new WaitForSeconds(4f);
         while (_stopSpawningEnemies == false && enemiesToSpawn > 0)
@@ -101,7 +108,14 @@ public class SpawnManager : MonoBehaviour
             yield return new WaitForSeconds(5);
         }
 
-        StartCoroutine(_gameManager.EnemyCheckRoutine(true));
+        if (_isBossWave)
+        {
+            _bossObject.FinishedAttack();
+        }
+        else
+        {
+            StartCoroutine(_gameManager.EnemyCheckRoutine(true));
+        }
     }
 
     IEnumerator SpawnPowerupRoutine()

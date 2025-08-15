@@ -151,6 +151,10 @@ public class Enemy : MonoBehaviour
         {
             _shield.SetActive(false);
             _shieldActive = false;
+            if (other.CompareTag("Beam"))
+            {
+                return;
+            }
             Destroy(other.gameObject);
             return;
         }
@@ -166,6 +170,7 @@ public class Enemy : MonoBehaviour
             _speed = 0;
             _isDead = true;
             Destroy(_instantiatedPoints);
+            Destroy(GetComponent<Collider2D>());
             Destroy(this.gameObject, 2.5f);
         }
 
@@ -190,6 +195,7 @@ public class Enemy : MonoBehaviour
             _anim.SetTrigger("OnEnemyDeath");
             _isDead = true;
             Destroy(_instantiatedPoints);
+            Destroy(GetComponent<Collider2D>());
             Destroy(this.gameObject, 2.5f);
         }
 
@@ -198,6 +204,7 @@ public class Enemy : MonoBehaviour
             _anim.SetTrigger("OnEnemyDeath");
             _isDead= true;
             Destroy(other);
+            Destroy(GetComponent<Collider2D>());
             Destroy(this.gameObject, 2.5f);
         }
     }

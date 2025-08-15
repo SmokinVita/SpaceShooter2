@@ -23,6 +23,10 @@ public class SmartType : Enemy
 
     protected override void Shoot()
     {
+
+        if (_player == null)
+            return;
+
         if (_player.transform.position.y > transform.position.y && Time.time >= _backwardsCanFire)
         {
             _backwardsCanFire = Time.time + _backFirerate;

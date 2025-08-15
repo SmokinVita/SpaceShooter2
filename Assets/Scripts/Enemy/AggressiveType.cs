@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class AggressiveType : Enemy
@@ -23,7 +24,11 @@ public class AggressiveType : Enemy
 
     protected override void Movement()
     {
-        if(_player == null) return;
+        if(_player == null)
+        {
+            base.Movement();
+            return;
+        }
 
         _distance = Vector3.Distance(transform.position, _player.transform.position);
         if (_distance < _distanceToFocusPlayer)

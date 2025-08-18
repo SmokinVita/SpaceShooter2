@@ -26,6 +26,13 @@ public class BossAI : MonoBehaviour
     [SerializeField] private int _spawnAmount = 4;
     [SerializeField] private int _currentSpawnTime;
 
+    //Regular Laser Fire
+    [SerializeField] private GameObject _laserPrefab;
+    [SerializeField] private GameObject[] _firePoints;
+    [SerializeField] private int _amountOfLasersShot = 4;
+    private int _currentLasersShot;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -99,7 +106,7 @@ public class BossAI : MonoBehaviour
 
     private void Attack()
     {
-        int randomAttack = 1;//Random.Range(0, 5);
+        int randomAttack = 2;//Random.Range(0, 5);
         switch (randomAttack)
         {
             case 0://4 milssile's from the sides, 2 from each side
@@ -116,15 +123,39 @@ public class BossAI : MonoBehaviour
                 StartCoroutine(_spawnManager.SpawnEnemiesRoutine(_currentSpawnTime * _spawnAmount));
                 break;
             case 2://Lasers
+                //Fire laser from Boss.
+                FireLasers();
                 break;
             case 3://drop down bomb's to explode
                 break;
             case 4://Laser Water fall, leave open a gap
                 break;
-
             default:
                 break;
         }
+    }
+
+    private void FireLasers()
+    {
+        StartCoroutine(FireLaserRoutine());
+    }
+
+    IEnumerator FireLaserRoutine()
+    {
+        _currentLasersShot = 0;
+
+        while (_currentLasersShot < _amountOfLasersShot)
+        {
+            for (int i = 0; i < _firePoints.Length; i++)
+            {
+                Instantiate(_laserPrefab, _firePoints[i].transform.position, Quaternion.identity);
+            }
+
+            _currentLasersShot++;
+            yield return new WaitForSeconds(.1f);
+        }
+
+        _attackFinished = true;
     }
 
     private void ActivateShields()

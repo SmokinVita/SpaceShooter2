@@ -3235,7 +3235,7 @@ PrefabInstance:
     - target: {fileID: 5900445494764553036, guid: c8b0e679d186245419914f213723c4ff,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5900445494764553038, guid: c8b0e679d186245419914f213723c4ff,
         type: 3}
@@ -3250,7 +3250,7 @@ PrefabInstance:
     - target: {fileID: 5900445494764553038, guid: c8b0e679d186245419914f213723c4ff,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.1
+      value: 4.65
       objectReference: {fileID: 0}
     - target: {fileID: 5900445494764553038, guid: c8b0e679d186245419914f213723c4ff,
         type: 3}
@@ -3292,6 +3292,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5900445494764553039, guid: c8b0e679d186245419914f213723c4ff,
+        type: 3}
+      propertyPath: _laserPrefab
+      value: 
+      objectReference: {fileID: 2074377860892868774, guid: 6cc468195606690498218e4487d8b7c4,
+        type: 3}
     - target: {fileID: 5900445494764553039, guid: c8b0e679d186245419914f213723c4ff,
         type: 3}
       propertyPath: _wayPoints.Array.data[0]

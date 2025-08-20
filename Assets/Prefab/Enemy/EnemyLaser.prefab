@@ -122,7 +122,7 @@ PrefabInstance:
     - target: {fileID: 8493586797044351789, guid: 1e9c57a02d25cb544831612fbb1f877f,
         type: 3}
       propertyPath: _isEnemyLaser
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e9c57a02d25cb544831612fbb1f877f, type: 3}
@@ -222,7 +222,7 @@ PrefabInstance:
     - target: {fileID: 8493586797044351789, guid: 1e9c57a02d25cb544831612fbb1f877f,
         type: 3}
       propertyPath: _isEnemyLaser
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e9c57a02d25cb544831612fbb1f877f, type: 3}

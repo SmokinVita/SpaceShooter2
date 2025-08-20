@@ -32,6 +32,13 @@ public class BossAI : MonoBehaviour
     [SerializeField] private int _amountOfLasersShot = 4;
     private int _currentLasersShot;
 
+    //LaserWaterFall
+    [SerializeField] private GameObject[] _pointsOfFire;
+    [SerializeField] private GameObject[] _warnings;
+    [SerializeField] private List<GameObject> _activePoints = new List<GameObject>();
+    [SerializeField] private List<GameObject> _activeWarnings = new List<GameObject>();
+    //[SerializeField] private 
+
 
     // Start is called before the first frame update
     void Start()
@@ -106,14 +113,14 @@ public class BossAI : MonoBehaviour
 
     private void Attack()
     {
-        int randomAttack = 2;//Random.Range(0, 5);
+        int randomAttack = 4;//Random.Range(0, 5);
         switch (randomAttack)
         {
             case 0://4 milssile's from the sides, 2 from each side
                 //pick two from left 0 - 3
-                int rightPoint = Random.Range(0, 2);   
+                int rightPoint = Random.Range(0, 2);
                 int leftPoint = Random.Range(4, 6);
-                StartCoroutine(MissileAttackRoutine(leftPoint,rightPoint));
+                StartCoroutine(MissileAttackRoutine(leftPoint, rightPoint));
                 //pick two from right 4 - 7
                 //Instantiate left 
                 //instantiate right after 1.5 seconds -> IEnumerator?
@@ -129,33 +136,11 @@ public class BossAI : MonoBehaviour
             case 3://drop down bomb's to explode
                 break;
             case 4://Laser Water fall, leave open a gap
+                LaserWaterFall();
                 break;
             default:
                 break;
         }
-    }
-
-    private void FireLasers()
-    {
-        StartCoroutine(FireLaserRoutine());
-    }
-
-    IEnumerator FireLaserRoutine()
-    {
-        _currentLasersShot = 0;
-
-        while (_currentLasersShot < _amountOfLasersShot)
-        {
-            for (int i = 0; i < _firePoints.Length; i++)
-            {
-                Instantiate(_laserPrefab, _firePoints[i].transform.position, Quaternion.identity);
-            }
-
-            _currentLasersShot++;
-            yield return new WaitForSeconds(.1f);
-        }
-
-        _attackFinished = true;
     }
 
     private void ActivateShields()
@@ -182,7 +167,7 @@ public class BossAI : MonoBehaviour
     IEnumerator MissileAttackRoutine(int leftPoints, int rightPoints)
     {
         //display warning
-        Debug.Log($"Left points: {leftPoints} : {leftPoints + 2}. Right Points: {rightPoints} : {rightPoints +2}");
+        Debug.Log($"Left points: {leftPoints} : {leftPoints + 2}. Right Points: {rightPoints} : {rightPoints + 2}");
         yield return new WaitForSeconds(1f);
         GameObject rightMissile1 = Instantiate(_missilePrefab, _missleSpawnPoints[rightPoints].transform.position, Quaternion.Euler(Vector3.forward * 90));
         rightMissile1.GetComponent<Missile>().MissileMoveLeft(false);
@@ -202,6 +187,92 @@ public class BossAI : MonoBehaviour
         _attackFinished = true;
     }
 
+    private void FireLasers()
+    {
+        StartCoroutine(FireLaserRoutine());
+    }
+
+    IEnumerator FireLaserRoutine()
+    {
+        _currentLasersShot = 0;
+
+        while (_currentLasersShot < _amountOfLasersShot)
+        {
+            for (int i = 0; i < _firePoints.Length; i++)
+            {
+                Instantiate(_laserPrefab, _firePoints[i].transform.position, Quaternion.identity);
+            }
+
+            _currentLasersShot++;
+            yield return new WaitForSeconds(.1f);
+        }
+
+        _attackFinished = true;
+    }
+
+    private void LaserWaterFall()
+    {
+        //Flash the warnings of where the lasers will fall
+        //fire from selected points
+        StartCoroutine(LaserWaterFallRoutine());
+    }
+
+    IEnumerator LaserWaterFallRoutine()
+    {
+        yield return null;
+        _activePoints.Clear();
+        _activeWarnings.Clear();
+        _activeWarnings.Clear();
+        int i = 0;
+        int randomIndex = Random.Range(0, _pointsOfFire.Length);
+        Debug.Log($"Got {randomIndex}");
+        foreach (var points in _pointsOfFire)
+        {
+            _activePoints.Add(points);
+            _activeWarnings.Add(points.transform.GetChild(0).gameObject);
+        }
+
+        _activeWarnings.RemoveAt(randomIndex);
+        _activeWarnings.RemoveAt(randomIndex - 1);
+        _activeWarnings.RemoveAt(randomIndex - 2);
+
+        int y = 0;
+        while (y < 5)
+        {
+            foreach (var warning in _activeWarnings)
+            {
+                warning.SetActive(true);
+            }
+
+            yield return new WaitForSeconds(1f);
+
+
+            foreach (var warning in _activeWarnings)
+            {
+                warning.SetActive(false);
+            }
+
+            yield return new WaitForSeconds(1f);
+            y++;
+        }
+
+        _activePoints.RemoveAt(randomIndex);
+        _activePoints.RemoveAt(randomIndex - 1);
+        _activePoints.RemoveAt(randomIndex - 2);
+
+        while (i < 20)
+        {
+            foreach (var laserpoint in _activePoints)
+            {
+                GameObject laser = Instantiate(_laserPrefab, laserpoint.transform.position, Quaternion.identity);
+                laser.GetComponent<Laser>().AssignEnemyLaser();
+            }
+            i++;
+            yield return new WaitForSeconds(.1f);
+        }
+
+        _attackFinished = true;
+    }
 }
 /*
  * Boss moves back and forth and will randomly stop fire an attack.

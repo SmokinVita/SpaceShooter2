@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Text _incomingWaveText;
     [SerializeField] private Text _incomingBossText;
+    [SerializeField] private Slider _bossHealth;
 
     private GameManager _gameManager;
 
@@ -128,5 +129,15 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         _incomingBossText.enabled = false;
+    }
+
+    public void ActiveBossHealth()
+    {
+        _bossHealth.gameObject.SetActive(true);
+    }
+
+    public void UpdateBossHealth(int health)
+    {
+        _bossHealth.value = health;
     }
 }

@@ -39,6 +39,13 @@ public class BossAI : MonoBehaviour
     [SerializeField] private List<GameObject> _activeWarnings = new List<GameObject>();
     //[SerializeField] private 
 
+    private UIManager _uiManager;
+    private GameManager _gameManager;
+
+    [SerializeField] private GameObject _shield;
+
+    [SerializeField] private GameObject[] _explosions;
+    private SpriteRenderer _bossRender;
 
     // Start is called before the first frame update
     void Start()
@@ -51,7 +58,21 @@ public class BossAI : MonoBehaviour
         if (_animator == null)
             Debug.Log("Boss Animator is NULL!");
 
+        _uiManager = FindObjectOfType<UIManager>();
+        if (_uiManager == null)
+            Debug.Log("UIManager is NULL!");
+
+        _gameManager = FindObjectOfType<GameManager>();
+        if (_gameManager == null)
+            Debug.Log("Game Manager is NULL!");
+
+        _bossRender = GetComponent<SpriteRenderer>();
+        if (_bossRender == null)
+            Debug.Log("Boss SpriteRender is NULL!");  
+
         StartCoroutine(BossAttackCoolDownRoutine());
+
+        _uiManager.UpdateBossHealth(_health);
     }
 
     public void StartMovement()
@@ -59,6 +80,7 @@ public class BossAI : MonoBehaviour
         Debug.Log("StartMovement");
         _animator.enabled = false;
         _canMove = true;
+        _uiManager.ActiveBossHealth();
     }
 
     // Update is called once per frame
@@ -99,21 +121,22 @@ public class BossAI : MonoBehaviour
         while (!_isDead)
         {
             _attackFinished = false;
-            float randomCoolDown = Random.Range(5f, 20f);
+            float randomCoolDown = Random.Range(6f, 15f);
             yield return new WaitForSeconds(randomCoolDown);
             _canMove = false;
+            ActivateShields();
             //Fire an attack
             Attack();
-            Debug.Log("Fire!!");
-            //yield return new WaitForSeconds(5f);
+
             yield return new WaitUntil(() => _attackFinished);
             _canMove = true;
+            DeactiveShields();
         }
     }
 
     private void Attack()
     {
-        int randomAttack = 4;//Random.Range(0, 5);
+        int randomAttack = Random.Range(0, 4);
         switch (randomAttack)
         {
             case 0://4 milssile's from the sides, 2 from each side
@@ -133,9 +156,7 @@ public class BossAI : MonoBehaviour
                 //Fire laser from Boss.
                 FireLasers();
                 break;
-            case 3://drop down bomb's to explode
-                break;
-            case 4://Laser Water fall, leave open a gap
+            case 3://Laser Water fall, leave open a gap
                 LaserWaterFall();
                 break;
             default:
@@ -145,23 +166,30 @@ public class BossAI : MonoBehaviour
 
     private void ActivateShields()
     {
-
+        _shield.SetActive(true);
     }
 
     private void DeactiveShields()
     {
-
+        _shield.SetActive(false);
     }
 
     private void Damage()
     {
         _health--;
-        //if health is half active 2 shields.
         if (_health <= 0)
         {
+            _isDead = true;
+            StopAllCoroutines();
             //show explosion animation
             //destroy Boss
+            //Destroy(gameObject);
+            StartCoroutine(DeathAnimation());
+            _canMove = false;
+            _gameManager.PlayBossDeath();
         }
+
+        _uiManager.UpdateBossHealth(_health);
     }
 
     IEnumerator MissileAttackRoutine(int leftPoints, int rightPoints)
@@ -200,7 +228,8 @@ public class BossAI : MonoBehaviour
         {
             for (int i = 0; i < _firePoints.Length; i++)
             {
-                Instantiate(_laserPrefab, _firePoints[i].transform.position, Quaternion.identity);
+                GameObject laser = Instantiate(_laserPrefab, _firePoints[i].transform.position, Quaternion.identity);
+                laser.GetComponent<Laser>().AssignEnemyLaser();
             }
 
             _currentLasersShot++;
@@ -224,8 +253,7 @@ public class BossAI : MonoBehaviour
         _activeWarnings.Clear();
         _activeWarnings.Clear();
         int i = 0;
-        int randomIndex = Random.Range(0, _pointsOfFire.Length);
-        Debug.Log($"Got {randomIndex}");
+        int randomIndex = Random.Range(2, _pointsOfFire.Length);
         foreach (var points in _pointsOfFire)
         {
             _activePoints.Add(points);
@@ -273,6 +301,51 @@ public class BossAI : MonoBehaviour
 
         _attackFinished = true;
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (_shield.activeSelf == true)
+        {
+            Destroy(other.gameObject);
+            return;
+        }
+
+        if (other.CompareTag("Laser") || other.CompareTag("HomingMissile"))
+        {
+
+            Destroy(other.gameObject);
+            //_anim.SetTrigger("OnEnemyDeath");
+            //_audioSource.Play();
+            Damage();
+        }
+
+        if (other.CompareTag("Beam"))
+        {
+            Damage();
+            //_anim.SetTrigger("OnEnemyDeath");
+            _isDead = true;
+            //Destroy(_instantiatedPoints);
+
+            //Set a cool down from hitting.
+            Destroy(GetComponent<Collider2D>());
+            Destroy(this.gameObject, 2.5f);
+        }
+    }
+
+    IEnumerator DeathAnimation()
+    {
+        for (int i = 0; i < _explosions.Length; i++)
+        {
+            yield return new WaitForSeconds(1.5f);
+            _explosions[i].SetActive(true);
+            Debug.Log(i);
+
+        }
+        Debug.Log("did this escape before fourth is finsih playing");
+        yield return new WaitForSeconds(1f);
+        _bossRender.enabled = false;
+    }
+
 }
 /*
  * Boss moves back and forth and will randomly stop fire an attack.

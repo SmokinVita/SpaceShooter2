@@ -11,6 +11,7 @@ TagManager:
   - EnemyBeam
   - HomingMissile
   - Missile
+  - EnemyLaser
   layers:
   - Default
   - TransparentFX

@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _incomingWaveText;
     [SerializeField] private Text _incomingBossText;
     [SerializeField] private Slider _bossHealth;
+    [SerializeField] private Text _bossDefeatText;
 
     private GameManager _gameManager;
 
@@ -139,5 +140,15 @@ public class UIManager : MonoBehaviour
     public void UpdateBossHealth(int health)
     {
         _bossHealth.value = health;
+    }
+    public void SetBossHealthBar(int heath)// Set the slider's max value to Boss's Max Health at the beginning
+    {
+        _bossHealth.maxValue = heath;
+    }
+
+    public void BossDefeatText()
+    {
+        _bossDefeatText.enabled = true;
+        _restartText.enabled = true;
     }
 }

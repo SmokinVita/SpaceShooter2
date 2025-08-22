@@ -50,11 +50,6 @@ public class GameManager : MonoBehaviour
         _isGameOver = true;
     }
 
-    public void PlayBossDeath()
-    {
-       // _bossDeath.Play();
-    }
-
     public IEnumerator EnemyCheckRoutine(bool checkForEnemies)
     {
         _checkingForEnemies = checkForEnemies;

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -45,6 +46,7 @@ public class BossAI : MonoBehaviour
     [SerializeField] private GameObject _shield;
 
     [SerializeField] private GameObject[] _explosions;
+    private Collider2D _bossCollider;
     private SpriteRenderer _bossRender;
 
     // Start is called before the first frame update
@@ -69,10 +71,20 @@ public class BossAI : MonoBehaviour
         _bossRender = GetComponent<SpriteRenderer>();
         if (_bossRender == null)
             Debug.Log("Boss SpriteRender is NULL!");  
+        
+        _bossCollider = GetComponent<Collider2D>();
+        if (_bossCollider == null)
+            Debug.Log("Boss Collider is NULL!");
 
         StartCoroutine(BossAttackCoolDownRoutine());
 
+        
+    }
+
+    private void OnEnable()
+    {
         _uiManager.UpdateBossHealth(_health);
+        _uiManager.SetBossHealthBar(_health);
     }
 
     public void StartMovement()
@@ -179,14 +191,11 @@ public class BossAI : MonoBehaviour
         _health--;
         if (_health <= 0)
         {
+            _bossCollider.enabled = false;
             _isDead = true;
             StopAllCoroutines();
-            //show explosion animation
-            //destroy Boss
-            //Destroy(gameObject);
             StartCoroutine(DeathAnimation());
             _canMove = false;
-            _gameManager.PlayBossDeath();
         }
 
         _uiManager.UpdateBossHealth(_health);
@@ -338,18 +347,15 @@ public class BossAI : MonoBehaviour
         {
             yield return new WaitForSeconds(1.5f);
             _explosions[i].SetActive(true);
-            Debug.Log(i);
 
         }
         Debug.Log("did this escape before fourth is finsih playing");
         yield return new WaitForSeconds(1f);
         _bossRender.enabled = false;
+        yield return new WaitForSeconds(1f);
+        _uiManager.BossDefeatText();
+        Destroy(gameObject);
+        _gameManager.UpdatePlayerStatus();
     }
 
 }
-/*
- * Boss moves back and forth and will randomly stop fire an attack.
- * at Half health 2 shields with heal will appear around Boss
- * Some attacks will be spawning in enemies. 
- * attack missiles from the sides
- */

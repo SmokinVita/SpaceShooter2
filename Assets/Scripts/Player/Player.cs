@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -168,7 +166,7 @@ public class Player : MonoBehaviour
         _ammoCount--;
         _uiManager.AmmoAmountText(_ammoCount);
         if (_ammoCount <= 0)
-            _uiManager.AmmoText();
+            _uiManager.AmmoText(true);
 
         _nextFire = Time.time + _fireRate;
 
@@ -326,6 +324,7 @@ public class Player : MonoBehaviour
     {
         _ammoCount = 15;
         _uiManager.AmmoAmountText(_ammoCount);
+        _uiManager.AmmoText(false);
     }
 
     public void ActiveBeam()

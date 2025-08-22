@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Playables;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
     private bool _checkingForEnemies = false;
 
     [SerializeField] private GameObject _astroid;
-    [SerializeField] private PlayableDirector _bossDeath;
 
     private void Start()
     {
@@ -20,9 +19,6 @@ public class GameManager : MonoBehaviour
         if (_spawnManager == null)
             Debug.Log("SpawnManager is Null!");
 
-        _bossDeath = GetComponent<PlayableDirector>();
-        if (_bossDeath == null)
-            Debug.Log("PlayableDirector is NULL!");
     }
 
     void Update()

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.UI;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Missile : MonoBehaviour
 {
@@ -10,7 +7,7 @@ public class Missile : MonoBehaviour
 
     private void Start()
     {
-        Destroy(this.gameObject, 3f);
+        Destroy(this.gameObject, 10f);
     }
 
     void Update()

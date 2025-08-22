@@ -85,14 +85,11 @@ public class UIManager : MonoBehaviour
             _thrusterImg.color = Color.Lerp(Color.green, Color.red, currentTemp);
     }
 
-    public void AmmoText()
+    public void AmmoText(bool isEmpty)
     {
         Debug.Log("Ammo Text Called");
 
-        if (_outOfAmmo.IsActive())
-            _outOfAmmo.enabled = false;
-        else
-            _outOfAmmo.enabled = true;
+        _outOfAmmo.enabled = isEmpty;
 
     }
 

@@ -1,7 +1,5 @@
-﻿using JetBrains.Annotations;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class BossAI : MonoBehaviour
@@ -78,13 +76,9 @@ public class BossAI : MonoBehaviour
 
         StartCoroutine(BossAttackCoolDownRoutine());
 
-        
-    }
-
-    private void OnEnable()
-    {
         _uiManager.UpdateBossHealth(_health);
         _uiManager.SetBossHealthBar(_health);
+
     }
 
     public void StartMovement()
@@ -189,6 +183,7 @@ public class BossAI : MonoBehaviour
     private void Damage()
     {
         _health--;
+        _uiManager.UpdateBossHealth(_health);
         if (_health <= 0)
         {
             _bossCollider.enabled = false;
@@ -197,8 +192,6 @@ public class BossAI : MonoBehaviour
             StartCoroutine(DeathAnimation());
             _canMove = false;
         }
-
-        _uiManager.UpdateBossHealth(_health);
     }
 
     IEnumerator MissileAttackRoutine(int leftPoints, int rightPoints)
@@ -242,7 +235,7 @@ public class BossAI : MonoBehaviour
             }
 
             _currentLasersShot++;
-            yield return new WaitForSeconds(.1f);
+            yield return new WaitForSeconds(.2f);
         }
 
         _attackFinished = true;
